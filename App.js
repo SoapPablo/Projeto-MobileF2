@@ -1,9 +1,13 @@
-import React from 'react';
-import { View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+	
+import NavegacaoPrincipal from './routes/NavegacaoPrincipal';
 
-function App() {
-  <View>
-  </View>;
-}
+const App = () => {
+  return (
+    <NavigationContainer>  
+        <NavegacaoPrincipal />
+    </NavigationContainer>
+  );
+};
 
 export default App;
