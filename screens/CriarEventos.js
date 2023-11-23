@@ -1,8 +1,17 @@
-import MyImagePicker from '../components/MyImagePicker';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
+import MyImagePicker from '../components/MyImagePicker';
 
 const CriarEventos = () => {
+  // Estados dos pickers e imputs.
+  const [selectedFaixaEtaria, setSelectedFaixaEtaria] =
+    useState('naFaixaEtaria');
+  const [selectedBebidas, setSelectedBebidas] = useState('na');
+  const [selectedFumante, setSelectedFumante] = useState('na');
+  const [selectedTipoEvento, setSelectedTipoEvento] = useState('na');
+
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <View>
@@ -28,6 +37,84 @@ const CriarEventos = () => {
             multiline={true}
             numberOfLines={10}
           />
+
+          <View style={styles.pickercontainer}>
+            <Text style={styles.textTitle}>Informações do evento</Text>
+
+            <Picker
+              selectedValue={selectedFaixaEtaria}
+              style={styles.picker}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedFaixaEtaria(itemValue)
+              }>
+              <Picker.Item label="Selecione a faixa etária" value="na" />
+              <Picker.Item label="+18" value="Proibido menores de 18 anos" />
+              <Picker.Item label="+16" value="Proibido menores de 16 anos" />
+              <Picker.Item label="+14" value="Proibido menores de 14 anos" />
+              <Picker.Item label="+12" value="Proibido menores de 12 anos" />
+              <Picker.Item
+                label="Livre para todos os públicos"
+                value="Livre para todos"
+              />
+            </Picker>
+            <Picker
+              selectedValue={selectedBebidas}
+              style={styles.picker}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedBebidas(itemValue)
+              }>
+              <Picker.Item label="Selecione o consumo de bebidas" value="na" />
+              <Picker.Item label="Bar no local" value="Bar no local" />
+              <Picker.Item label="Leve sua bebida" value="Leve sua bebida" />
+              <Picker.Item
+                label="Proibido bebidas alcoólicas"
+                value="Sem álcool"
+              />
+            </Picker>
+            <Picker
+              selectedValue={selectedFumante}
+              style={styles.picker}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedFumante(itemValue)
+              }>
+              <Picker.Item label="Selecione a regra para fumantes" value="na" />
+              <Picker.Item label="Permitido fumar" value="Permitido fumar" />
+              <Picker.Item label="Proibido fumar" value="Proibido fumar" />
+              <Picker.Item
+                label="Local com fumódromo"
+                value="Local com fumódromo"
+              />
+              <Picker.Item label="Hookah" value="Hookah" />
+            </Picker>
+            <Picker
+              selectedValue={selectedTipoEvento}
+              style={styles.picker}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedTipoEvento(itemValue)
+              }>
+              <Picker.Item label="Selecione o tipo do evento" value="na" />
+              <Picker.Item label="Casamento" value="Casamento" />
+              <Picker.Item label="Aniversário" value="Aniversario" />
+              <Picker.Item label="Formatura" value="Formatura" />
+              <Picker.Item label="Festas e shows" value="Festas e shows" />
+              <Picker.Item label="Churrasco" value="Churrasco" />
+              <Picker.Item label="Campeonatos" value="Campeonatos" />
+              <Picker.Item label="Stand Up Comedy" value="Stand Up Comedy" />
+              <Picker.Item
+                label="Esportes e atividades físicas"
+                value="Esportes e atividades físicas"
+              />
+              <Picker.Item
+                label="E-sports e online"
+                value="E-sports e online"
+              />
+              <Picker.Item
+                label="Reuniões e palestras"
+                value="Reuniões e palestras"
+              />
+            </Picker>
+          </View>
+
           <TextInput
             style={styles.textinput2}
             type="outlined"
@@ -76,6 +163,26 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 20,
     height: 200,
     width: '90%',
+  },
+  textTitle: {
+    marginTop: 30,
+    color: '#a020f0',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  pickercontainer: {
+    alignItems: 'center',
+    flex: 1,
+    width: '100%',
+  },
+  picker: {
+    margin: 10,
+    width: '90%',
+    height: 50,
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+    backgroundColor: '#a020f0',
   },
 });
 
