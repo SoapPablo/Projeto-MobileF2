@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
+import DatePicker from '../components/DataPicker';
 import MyImagePicker from '../components/MyImagePicker';
 
 const CriarEventos = () => {
@@ -11,6 +12,7 @@ const CriarEventos = () => {
   const [selectedBebidas, setSelectedBebidas] = useState('na');
   const [selectedFumante, setSelectedFumante] = useState('na');
   const [selectedTipoEvento, setSelectedTipoEvento] = useState('na');
+  const [selectedDuracao, setSelectedDuracao] = useState('na');
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
@@ -120,6 +122,29 @@ const CriarEventos = () => {
             type="outlined"
             label="Endereço"
           />
+
+          <Text style={styles.textTitle}>Data e hora</Text>
+
+          <View style={styles.datePicker}>
+            <DatePicker />
+          </View>
+
+          <Picker
+            selectedValue={selectedDuracao}
+            style={styles.picker}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedDuracao(itemValue)
+            }>
+            <Picker.Item label="Selecione a duração do evento" value="na" />
+            <Picker.Item label="1 Hora" value="1" />
+            <Picker.Item label="2 Horas" value="2" />
+            <Picker.Item label="3 Horas" value="3" />
+            <Picker.Item label="6 Horas" value="6" />
+            <Picker.Item label="12 Horas" value="12" />
+            <Picker.Item label="1 Dia" value="24" />
+            <Picker.Item label="2 Dias" value="48" />
+            <Picker.Item label="3 Dias" value="72" />
+          </Picker>
         </View>
       </View>
     </ScrollView>
@@ -183,6 +208,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     backgroundColor: '#a020f0',
+  },
+  datePicker: {
+    width: '100%',
+    margin: 5,
   },
 });
 
