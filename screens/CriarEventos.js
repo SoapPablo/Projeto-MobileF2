@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { TextInput, HelperText } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DatePicker from '../components/DataPicker';
 import MapPicker from '../components/MapPicker';
@@ -31,10 +31,23 @@ const CriarEventosContent = () => {
     selectedDuracao,
     setSelectedDuracao,
     endereco,
+    // Estados de erro
+    imagemError,
+    nomeEventoError,
+    subTituloError,
+    descricaoEventoError,
+    pickerNaError,
+    dataEventoError,
+    localizacaoEventoError,
+    enderecoError,
     // Funções
     handleLocationSelected,
     handleDataSelected,
     handleHoraSelected,
+    validarNomeEvento,
+    validarSubTitulo,
+    validarDescricaoEvento,
+    validarEndereco,
     criarEvento,
   } = useEventoContext();
 
@@ -46,28 +59,57 @@ const CriarEventosContent = () => {
         </View>
 
         <View style={styles.container}>
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={Boolean(imagemError)}>
+            {imagemError}
+          </HelperText>
 
           <TextInput
             style={styles.textinput}
             type="outlined"
             label="Nome do evento"
             value={nomeEvento}
+            onChangeText={validarNomeEvento}
           />
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={Boolean(nomeEventoError)}>
+            {nomeEventoError}
+          </HelperText>
 
           <TextInput
             style={styles.textinput}
             type="outlined"
             label="Subtítulo (opcional)"
             value={subTitulo}
+            onChangeText={validarSubTitulo}
           />
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={Boolean(subTituloError)}>
+            {subTituloError}
+          </HelperText>
 
           <TextInput
             style={styles.textinputdesc}
             label="Descrição do evento (opcional)"
             value={descricaoEvento}
+            onChangeText={validarDescricaoEvento}
             multiline={true}
             numberOfLines={10}
           />
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={Boolean(
+              descricaoEventoError && descricaoEvento.length > 0
+            )}>
+            {descricaoEventoError}
+          </HelperText>
 
           <View style={styles.pickercontainer}>
             <Text style={styles.textTitle}>Informações do evento</Text>
@@ -145,6 +187,12 @@ const CriarEventosContent = () => {
               />
             </Picker>
           </View>
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={pickerNaError}>
+            {pickerNaError}
+          </HelperText>
 
           <Text style={styles.textTitle}>Data e hora</Text>
 
@@ -172,18 +220,39 @@ const CriarEventosContent = () => {
             <Picker.Item label="3 Dias" value="72" />
           </Picker>
 
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={dataEventoError}>
+            {dataEventoError}
+          </HelperText>
+
           <Text style={styles.textTitle}>Localização e endereço</Text>
 
           <View style={styles.mapContainer}>
             <MapPicker onLocationSelected={handleLocationSelected} />
           </View>
 
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={Boolean(localizacaoEventoError)}>
+            {localizacaoEventoError}
+          </HelperText>
+
           <TextInput
             style={styles.textinput2}
             type="outlined"
             label="Endereço"
             value={endereco}
+            onChangeText={validarEndereco}
           />
+          <HelperText
+            style={styles.helperText}
+            type="error"
+            visible={enderecoError}>
+            {enderecoError}
+          </HelperText>
 
           <TouchableOpacity style={styles.confirmButton} onPress={criarEvento}>
             <Text style={styles.buttonText}>Criar Evento</Text>
@@ -267,6 +336,11 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     width: '90%',
+  },
+  helperText: {
+    margin: -10,
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   buttonText: {
     color: 'white',
