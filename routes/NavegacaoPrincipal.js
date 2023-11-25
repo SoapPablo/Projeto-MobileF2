@@ -9,13 +9,9 @@ import EsqueceuSenha from '../screens/EsqueceuSenha';
 import Login from '../screens/Login';
 import MeusEventos from '../screens/MeusEventos';
 
-
 const Stack = createNativeStackNavigator();
 
-
 const NavegacaoPrincipal = () => {
-
-
   return (
     <Stack.Navigator>
       <Stack.Screen name="Login" component={Login} />
