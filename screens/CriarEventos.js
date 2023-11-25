@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-paper';
 import DatePicker from '../components/DataPicker';
+import MapPicker from '../components/MapPicker';
 import MyImagePicker from '../components/MyImagePicker';
 
 const CriarEventos = () => {
@@ -117,12 +118,6 @@ const CriarEventos = () => {
             </Picker>
           </View>
 
-          <TextInput
-            style={styles.textinput2}
-            type="outlined"
-            label="Endereço"
-          />
-
           <Text style={styles.textTitle}>Data e hora</Text>
 
           <View style={styles.datePicker}>
@@ -145,6 +140,16 @@ const CriarEventos = () => {
             <Picker.Item label="2 Dias" value="48" />
             <Picker.Item label="3 Dias" value="72" />
           </Picker>
+
+          <View style={styles.mapContainer}>
+            <MapPicker />
+          </View>
+
+          <TextInput
+            style={styles.textinput2}
+            type="outlined"
+            label="Endereço"
+          />
         </View>
       </View>
     </ScrollView>
@@ -166,6 +171,7 @@ const styles = StyleSheet.create({
     padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   textinput: {
     margin: 10,
@@ -212,6 +218,9 @@ const styles = StyleSheet.create({
   datePicker: {
     width: '100%',
     margin: 5,
+  },
+  mapContainer: {
+    width: '90%',
   },
 });
 
