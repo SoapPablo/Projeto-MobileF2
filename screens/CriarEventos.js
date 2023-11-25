@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import React from 'react';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import { TextInput } from 'react-native-paper';
+import { Picker } from '@react-native-picker/picker';
 import DatePicker from '../components/DataPicker';
 import MapPicker from '../components/MapPicker';
 import MyImagePicker from '../components/MyImagePicker';
+import { EventoProvider, useEventoContext } from '../contexts/EventoContext';
 
-const CriarEventos = () => {
-  // Estados dos pickers e imputs.
-  const [selectedFaixaEtaria, setSelectedFaixaEtaria] =
-    useState('naFaixaEtaria');
-  const [selectedBebidas, setSelectedBebidas] = useState('na');
-  const [selectedFumante, setSelectedFumante] = useState('na');
-  const [selectedTipoEvento, setSelectedTipoEvento] = useState('na');
-  const [selectedDuracao, setSelectedDuracao] = useState('na');
+const CriarEventosContent = () => {
+  const {
+    // Estados
+    setImagemEvento,
+    nomeEvento,
+    subTitulo,
+    descricaoEvento,
+    selectedFaixaEtaria,
+    setSelectedFaixaEtaria,
+    selectedBebidas,
+    setSelectedBebidas,
+    selectedFumante,
+    setSelectedFumante,
+    selectedTipoEvento,
+    setSelectedTipoEvento,
+    selectedDuracao,
+    setSelectedDuracao,
+    endereco,
+    // Funções
+    handleLocationSelected,
+    handleDataSelected,
+    handleHoraSelected,
+    criarEvento,
+  } = useEventoContext();
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
@@ -21,22 +44,27 @@ const CriarEventos = () => {
         <View style={styles.image}>
           <MyImagePicker onImageSelected={(uri) => setImagemEvento(uri)} />
         </View>
+
         <View style={styles.container}>
+
           <TextInput
             style={styles.textinput}
             type="outlined"
             label="Nome do evento"
+            value={nomeEvento}
           />
 
           <TextInput
             style={styles.textinput}
             type="outlined"
             label="Subtítulo (opcional)"
+            value={subTitulo}
           />
 
           <TextInput
             style={styles.textinputdesc}
             label="Descrição do evento (opcional)"
+            value={descricaoEvento}
             multiline={true}
             numberOfLines={10}
           />
@@ -121,7 +149,10 @@ const CriarEventos = () => {
           <Text style={styles.textTitle}>Data e hora</Text>
 
           <View style={styles.datePicker}>
-            <DatePicker />
+            <DatePicker
+              onDateSelected={handleDataSelected}
+              onHoraSelected={handleHoraSelected}
+            />
           </View>
 
           <Picker
@@ -141,18 +172,33 @@ const CriarEventos = () => {
             <Picker.Item label="3 Dias" value="72" />
           </Picker>
 
+          <Text style={styles.textTitle}>Localização e endereço</Text>
+
           <View style={styles.mapContainer}>
-            <MapPicker />
+            <MapPicker onLocationSelected={handleLocationSelected} />
           </View>
 
           <TextInput
             style={styles.textinput2}
             type="outlined"
             label="Endereço"
+            value={endereco}
           />
+
+          <TouchableOpacity style={styles.confirmButton} onPress={criarEvento}>
+            <Text style={styles.buttonText}>Criar Evento</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
+  );
+};
+
+const CriarEventos = () => {
+  return (
+    <EventoProvider>
+      <CriarEventosContent />
+    </EventoProvider>
   );
 };
 
@@ -221,6 +267,21 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     width: '90%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    width: '98%',
+    height: 50,
+    backgroundColor: '#a020f0',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: -20,
+    marginTop: 7,
   },
 });
 
