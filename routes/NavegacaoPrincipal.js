@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 const NavegacaoPrincipal = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName='Buscar Eventos'>
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Cadastro" component={Cadastro} />
       <Stack.Screen name="Esqueceu sua Senha" component={EsqueceuSenha} />
