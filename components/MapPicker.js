@@ -5,10 +5,10 @@ import { Location, Permissions } from 'expo';
 
 const MapPicker = ({ onLocationSelected }) => {
   const [mapRegion, setMapRegion] = useState({
-    latitude: -15.78,
-    longitude: -47.89,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    longitude: -47.912813276052475,
+    latitude: -15.834305760346858,
+    latitudeDelta: 0.003,
+    longitudeDelta: 0.003,
   });
 
   const [selectedLocation, setSelectedLocation] = useState(null);

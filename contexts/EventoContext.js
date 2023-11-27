@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const EventoContext = createContext();
 
@@ -15,7 +15,7 @@ export const useEventoContext = () => {
 export const EventoProvider = ({ children }) => {
   const [imagemEvento, setImagemEvento] = useState(null);
   const [nomeEvento, setNomeEvento] = useState('');
-  const [subTitulo, setSubTitulo] = useState('');
+  const [subtitulo, setSubtitulo] = useState('');
   const [descricaoEvento, setDescricaoEvento] = useState('');
   const [selectedFaixaEtaria, setSelectedFaixaEtaria] =
     useState('naFaixaEtaria');
@@ -30,7 +30,7 @@ export const EventoProvider = ({ children }) => {
 
   const [imagemError, setImagemError] = useState('');
   const [nomeEventoError, setNomeEventoError] = useState('');
-  const [subTituloError, setSubTituloError] = useState('');
+  const [subtituloError, setSubtituloError] = useState('');
   const [descricaoEventoError, setDescricaoEventoError] = useState('');
   const [pickerNaError, setPickerNaError] = useState('');
   const [dataEventoError, setDataEventoError] = useState(null);
@@ -38,7 +38,47 @@ export const EventoProvider = ({ children }) => {
   const [enderecoError, setEnderecoError] = useState('');
   const [aletaError, setAlertaError] = useState('');
 
-  const [eventos, setEventos] = useState([]);
+  const [eventos, setEventos] = useState([
+    {
+      id: 1,
+      imagemEvento: 'http://hoffmann.com/sitenovo/wp-content/uploads/2020/08/evento-corporativo-7-dicas-para-realizar-um-evento-diferenciado.jpg',
+      nomeEvento: 'Nome do evento',
+      subtitulo: 'Subtítulo do evento',
+      descricaoEvento: 'Descrição',
+      selectedFaixaEtaria: 'Proibido menores de 18 anos',
+      selectedBebidas: 'Leve sua bebida',
+      selectedFumante: 'Hookah',
+      selectedTipoEvento: 'Churrasco',
+      dataEvento: '30/11/2023',
+      horaEvento: '20:30',
+      selectedDuracao: '3',
+      localizacaoEvento: {
+        longitude: -47.912813276052475,
+        latitude: -15.834305760346858,
+      },
+      endereco: 'Estacionamento do IESB sul',
+    },
+    {
+      id: 2,
+      imagemEvento:
+        'https://s2-techtudo.glbimg.com/KTWNbCJotODzAc34cm6LV8x2zz4=/0x0:1200x889/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2022/3/3/8uDXAgRv2I4Zi5KLbzMw/ccxp-techtudo.jpg',
+      nomeEvento: 'Festa do JC',
+      subtitulo: 'Forrozada a noite toda 🎉🪩',
+      descricaoEvento: 'Imagine uma descrição MT boa',
+      selectedFaixaEtaria: 'Proibido menores de 18 anos',
+      selectedBebidas: 'Leve sua bebida',
+      selectedFumante: 'Hookah',
+      selectedTipoEvento: 'Churrasco',
+      dataEvento: '30/11/2023',
+      horaEvento: '20:00',
+      selectedDuracao: '6',
+      localizacaoEvento: {
+        longitude: -47.913013100624084,
+        latitude: -15.83442284741676,
+      },
+      endereco: 'Estacionamento da faculdade dos cornos',
+    },
+  ]);
 
   const handleLocationSelected = (location) => {
     setLocalizacaoEvento(location);
@@ -65,13 +105,13 @@ export const EventoProvider = ({ children }) => {
   };
 
   // Valida o subtítulo.
-  const validarSubTitulo = (text) => {
+  const validarSubtitulo = (text) => {
     if (text.length > 42) {
-      setSubTituloError('O subtítulo não pode ter mais de 42 caracteres.');
+      setSubtituloError('O subtítulo não pode ter mais de 42 caracteres.');
     } else {
-      setSubTituloError('');
+      setSubtituloError('');
     }
-    setSubTitulo(text);
+    setSubtitulo(text);
   };
 
   // Valida a descrição.
@@ -169,42 +209,83 @@ export const EventoProvider = ({ children }) => {
     }
 
     // cria o evento
-    if (
-      !imagemError &&
-      !nomeEventoError &&
-      !pickerNaError &&
-      !dataEventoError &&
-      !localizacaoEventoError &&
-      !enderecoError
-    ) {
-      const novoEvento = {
-        id: Date.now(),
-        imagemEvento,
-        nomeEvento,
-        subTitulo,
-        descricaoEvento,
-        selectedFaixaEtaria,
-        selectedBebidas,
-        selectedFumante,
-        selectedTipoEvento,
-        dataEvento,
-        horaEvento,
-        selectedDuracao,
-        localizacaoEvento,
-        endereco,
-      };
+    const novoEvento = {
+      id: eventos.length + 1,
+      imagemEvento,
+      nomeEvento,
+      subtitulo,
+      descricaoEvento,
+      selectedFaixaEtaria,
+      selectedBebidas,
+      selectedFumante,
+      selectedTipoEvento,
+      dataEvento,
+      horaEvento,
+      selectedDuracao,
+      localizacaoEvento,
+      endereco,
+    };
 
-      setEventos((prevEventos) => [...prevEventos, novoEvento]);
-    }
+    setEventos([...eventos, novoEvento]);
   };
+
+  const removerEvento = (id) => {
+    const listaAtualizada = eventos.filter((eventos) => eventos.id !== id);
+    setEventos(listaAtualizada);
+  };
+
+  const atualizar = (
+    id,
+    imagemEvento,
+    nomeEvento,
+    subtitulo,
+    descricaoEvento,
+    selectedFaixaEtaria,
+    selectedBebidas,
+    selectedFumante,
+    selectedTipoEvento,
+    dataEvento,
+    horaEvento,
+    selectedDuracao,
+    localizacaoEvento,
+    endereco
+  ) => {
+    const eventoAtualizado = {
+      id,
+      imagemEvento,
+      nomeEvento,
+      subtitulo,
+      descricaoEvento,
+      selectedFaixaEtaria,
+      selectedBebidas,
+      selectedFumante,
+      selectedTipoEvento,
+      dataEvento,
+      horaEvento,
+      selectedDuracao,
+      localizacaoEvento,
+      endereco,
+    };
+    const listaAtualizada = eventos.map((evento) =>
+      evento.id === id ? eventoAtualizado : evento
+    );
+    setEventos(listaAtualizada);
+  };
+
+  const buscar = (id) => {
+    return eventos.find((evento) => evento.id === id);
+  };
+  useEffect(() => {
+    console.log('Eventos após a atualização:', eventos);
+  }, [eventos]);
 
   const contextValues = {
     imagemEvento,
     setImagemEvento,
     nomeEvento,
     setNomeEvento,
-    subTitulo,
-    setSubTitulo,
+    subtitulo,
+    setSubtitulo,
     descricaoEvento,
     setDescricaoEvento,
     selectedFaixaEtaria,
@@ -229,8 +310,8 @@ export const EventoProvider = ({ children }) => {
     setImagemError,
     nomeEventoError,
     setNomeEventoError,
-    subTituloError,
-    setSubTituloError,
+    subtituloError,
+    setSubtituloError,
     descricaoEventoError,
     setDescricaoEventoError,
     pickerNaError,
@@ -245,7 +326,7 @@ export const EventoProvider = ({ children }) => {
     handleDataSelected,
     handleHoraSelected,
     validarNomeEvento,
-    validarSubTitulo,
+    validarSubtitulo,
     validarDescricaoEvento,
     validarEndereco,
     criarEvento,
@@ -253,6 +334,9 @@ export const EventoProvider = ({ children }) => {
     setEventos,
     aletaError,
     setAlertaError,
+    removerEvento,
+    atualizar,
+    buscar,
   };
 
   return (

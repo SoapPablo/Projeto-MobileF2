@@ -18,7 +18,7 @@ const CriarEventosContent = () => {
     // Estados
     setImagemEvento,
     nomeEvento,
-    subTitulo,
+    subtitulo,
     descricaoEvento,
     selectedFaixaEtaria,
     setSelectedFaixaEtaria,
@@ -34,7 +34,7 @@ const CriarEventosContent = () => {
     // Estados de erro
     imagemError,
     nomeEventoError,
-    subTituloError,
+    subtituloError,
     descricaoEventoError,
     pickerNaError,
     dataEventoError,
@@ -45,7 +45,7 @@ const CriarEventosContent = () => {
     handleDataSelected,
     handleHoraSelected,
     validarNomeEvento,
-    validarSubTitulo,
+    validarSubtitulo,
     validarDescricaoEvento,
     validarEndereco,
     criarEvento,
@@ -84,14 +84,14 @@ const CriarEventosContent = () => {
             style={styles.textinput}
             type="outlined"
             label="Subtítulo (opcional)"
-            value={subTitulo}
-            onChangeText={validarSubTitulo}
+            value={subtitulo}
+            onChangeText={validarSubtitulo}
           />
           <HelperText
             style={styles.helperText}
             type="error"
-            visible={Boolean(subTituloError)}>
-            {subTituloError}
+            visible={Boolean(subtituloError)}>
+            {subtituloError}
           </HelperText>
 
           <TextInput
@@ -266,7 +266,7 @@ const CriarEventosContent = () => {
 const CriarEventos = () => {
   return (
     <EventoProvider>
-      <CriarEventosContent />
+        <CriarEventosContent />
     </EventoProvider>
   );
 };
