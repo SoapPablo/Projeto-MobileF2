@@ -17,7 +17,6 @@ const DetalhesDoEvento = () => {
   const route = useRoute();
   const eventoId = route.params?.eventoId;
 
-  console.log('eventoId:', eventoId);
   const eventoContext = useEventoContext();
   const eventoSelecionado = eventoContext.buscar(eventoId);
 

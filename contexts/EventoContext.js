@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EventoContext = createContext();
 
@@ -36,12 +37,12 @@ export const EventoProvider = ({ children }) => {
   const [dataEventoError, setDataEventoError] = useState(null);
   const [localizacaoEventoError, setLocalizacaoEventoError] = useState(null);
   const [enderecoError, setEnderecoError] = useState('');
-  const [aletaError, setAlertaError] = useState('');
 
   const [eventos, setEventos] = useState([
     {
       id: 1,
-      imagemEvento: 'http://hoffmann.com/sitenovo/wp-content/uploads/2020/08/evento-corporativo-7-dicas-para-realizar-um-evento-diferenciado.jpg',
+      imagemEvento:
+        'http://hoffmann.com/sitenovo/wp-content/uploads/2020/08/evento-corporativo-7-dicas-para-realizar-um-evento-diferenciado.jpg',
       nomeEvento: 'Nome do evento',
       subtitulo: 'Subtítulo do evento',
       descricaoEvento: 'Descrição',
@@ -91,6 +92,21 @@ export const EventoProvider = ({ children }) => {
   const handleHoraSelected = (horaEvento) => {
     setHoraEvento(horaEvento);
   };
+
+  useEffect(() => {
+    const carregarEventos = async () => {
+      try {
+        const eventosArmazenados = await AsyncStorage.getItem('eventos');
+        if (eventosArmazenados !== null) {
+          setEventos(JSON.parse(eventosArmazenados));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar eventos:', error);
+      }
+    };
+
+    carregarEventos();
+  }, []);
 
   // Valida o nome do evento.
   const validarNomeEvento = (text) => {
@@ -147,6 +163,7 @@ export const EventoProvider = ({ children }) => {
     // Verifica se uma imagem foi escolhida.
     if (!imagemEvento) {
       setImagemError('Por favor, escolha uma imagem para o evento.');
+      return;
     } else {
       setImagemError('');
     }
@@ -154,6 +171,7 @@ export const EventoProvider = ({ children }) => {
     // Verifica o nome do evento.
     if (nomeEvento.trim().length < 5) {
       setNomeEventoError('O nome do evento deve ter pelo menos 5 caracteres.');
+      return;
     } else {
       setNomeEventoError('');
     }
@@ -166,6 +184,7 @@ export const EventoProvider = ({ children }) => {
       selectedTipoEvento === 'na'
     ) {
       setPickerNaError('Por favor, Preencha todas as informações do evento.');
+      return;
     } else {
       setPickerNaError('');
     }
@@ -173,10 +192,13 @@ export const EventoProvider = ({ children }) => {
     // Verifica se a data, hora e duração foram escolhidas.
     if (!dataEvento) {
       setDataEventoError('Por favor, selecione a data do evento.');
+      return;
     } else if (!horaEvento) {
       setDataEventoError('Por favor, selecione o horário do evento');
+      return;
     } else if (selectedDuracao == 'na') {
       setDataEventoError('Por favor, selecione a duração do evento.');
+      return;
     } else {
       setDataEventoError('');
     }
@@ -184,6 +206,7 @@ export const EventoProvider = ({ children }) => {
     // Verifica se uma localização foi escolhida.
     if (!localizacaoEvento) {
       setLocalizacaoEventoError('Por favor, marque a localização do evento.');
+      return;
     } else {
       setLocalizacaoEventoError('');
     }
@@ -191,24 +214,12 @@ export const EventoProvider = ({ children }) => {
     // Verifica o endereço do evento.
     if (endereco.trim().length < 10) {
       setEnderecoError('O endereço deve ter pelo menos 10 caracteres');
+      return;
     } else {
       setEnderecoError('');
     }
 
-    // Se ouver erros, mostra um alert ao usuário.
-    if (
-      imagemError ||
-      nomeEventoError ||
-      pickerNaError ||
-      dataEventoError ||
-      localizacaoEventoError ||
-      enderecoError
-    ) {
-      setAlertaError('Por favor, reveja o formulário e corrija os erros.');
-      return;
-    }
-
-    // cria o evento
+    console.log('bagui doido');
     const novoEvento = {
       id: eventos.length + 1,
       imagemEvento,
@@ -227,11 +238,40 @@ export const EventoProvider = ({ children }) => {
     };
 
     setEventos([...eventos, novoEvento]);
+
+    const salvarEventosLocalmente = async () => {
+      try {
+        await AsyncStorage.setItem(
+          'eventos',
+          JSON.stringify([...eventos, novoEvento])
+        );
+      } catch (error) {
+        console.error('Erro ao salvar eventos localmente:', error);
+      }
+    };
+
+    salvarEventosLocalmente();
   };
 
-  const removerEvento = (id) => {
-    const listaAtualizada = eventos.filter((eventos) => eventos.id !== id);
+  const removerEvento = async (id) => {
+    const listaAtualizada = eventos.filter((evento) => evento.id !== id);
     setEventos(listaAtualizada);
+
+    const eventosAtualizados = listaAtualizada.map((evento) => ({
+      ...evento,
+      id: evento.id.toString(),
+      localizacaoEvento: {
+        ...evento.localizacaoEvento,
+        latitude: evento.localizacaoEvento.latitude.toString(),
+        longitude: evento.localizacaoEvento.longitude.toString(),
+      },
+    }));
+
+    try {
+      await AsyncStorage.setItem('eventos', JSON.stringify(eventosAtualizados));
+    } catch (error) {
+      console.error('Erro ao salvar eventos localmente:', error);
+    }
   };
 
   const atualizar = (
@@ -275,10 +315,6 @@ export const EventoProvider = ({ children }) => {
   const buscar = (id) => {
     return eventos.find((evento) => evento.id === id);
   };
-  
-  useEffect(() => {
-    console.log('Eventos após a atualização:', eventos);
-  }, [eventos]);
 
   const contextValues = {
     imagemEvento,
@@ -333,8 +369,6 @@ export const EventoProvider = ({ children }) => {
     criarEvento,
     eventos,
     setEventos,
-    aletaError,
-    setAlertaError,
     removerEvento,
     atualizar,
     buscar,
