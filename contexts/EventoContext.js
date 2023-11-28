@@ -45,9 +45,9 @@ export const EventoProvider = ({ children }) => {
       nomeEvento: 'Nome do evento',
       subtitulo: 'Subtítulo do evento',
       descricaoEvento: 'Descrição',
-      selectedFaixaEtaria: 'Proibido menores de 18 anos',
-      selectedBebidas: 'Leve sua bebida',
-      selectedFumante: 'Hookah',
+      selectedFaixaEtaria: 'Livre para todos',
+      selectedBebidas: 'Sem álcool',
+      selectedFumante: 'Proibido fumar',
       selectedTipoEvento: 'Churrasco',
       dataEvento: '30/11/2023',
       horaEvento: '20:30',
@@ -275,6 +275,7 @@ export const EventoProvider = ({ children }) => {
   const buscar = (id) => {
     return eventos.find((evento) => evento.id === id);
   };
+  
   useEffect(() => {
     console.log('Eventos após a atualização:', eventos);
   }, [eventos]);
