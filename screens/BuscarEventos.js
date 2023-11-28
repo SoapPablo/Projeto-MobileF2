@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -38,6 +38,8 @@ const BuscarEventos = ({ navigation }) => {
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
+  useEffect(() => {}, [eventos]);
+
   return (
     <ScrollView style={styles.container}>
       <Searchbar
@@ -68,6 +70,11 @@ const BuscarEventos = ({ navigation }) => {
         style={styles.createEventButton}
         onPress={() => navigation.navigate('Criar Eventos')}>
         <Text style={styles.createEventButtonText}>Criar Evento</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.createEventButton}
+        onPress={() => navigation.navigate('Meus Eventos')}>
+        <Text style={styles.createEventButtonText}>Meus Eventos</Text>
       </TouchableOpacity>
     </ScrollView>
   );
