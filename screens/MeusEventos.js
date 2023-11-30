@@ -9,7 +9,7 @@ import {
   Button,
 } from 'react-native';
 import { Dialog, Portal, Provider } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useEventoContext } from '../contexts/EventoContext';
 
@@ -43,7 +43,10 @@ function CriadosScreen() {
     hideDialog,
     visible,
     setImagemEvento, 
+    remover,
   } = useEventoContext();
+
+  const navigation = useNavigation();  
 
   return (
     <Provider>
@@ -52,15 +55,17 @@ function CriadosScreen() {
           {eventos.map((evento, index) => (
             <EventCard
               key={index}
-              title={evento.nomeEvento}
-              date={evento.dataEvento}
-              time={evento.horaEvento}
-              description={evento.descricaoEvento}
-              imageSource={{ uri: evento.imagemEvento }}
+              nomeEvento={evento.nomeEvento}
+              dataEvento={evento.dataEvento}
+              horaEvento={evento.horaEvento}
+              subtitulo={evento.descricaoEvento}
+              onPress={() =>
+                navigation.navigate('Detalhes do Evento', { eventoId: evento.id })
+              }
             />
           ))}
           <TouchableOpacity style={styles.button} onPress={showDialog}>
-            <Text style={{ color: 'white', textAlign: 'center' }}>
+            <Text style={{ backgroundColor: 'red' ,margin: 10,  borderRadius: 15, color: 'white', textAlign: 'center' }}>
               CANCELAR EVENTO
             </Text>
           </TouchableOpacity>
@@ -80,7 +85,7 @@ function CriadosScreen() {
               </Text>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={hideDialog}>Cancelar</Button>
+              <Button onPress={() => remover(contato.id)}>Cancelar</Button>
               <Button onPress={hideDialog}>Voltar</Button>
             </Dialog.Actions>
           </Dialog>
@@ -90,19 +95,26 @@ function CriadosScreen() {
   );
 }
 
-const EventCard = ({ imagemEvento, nomeEvento, dataEvento, horaEvento, descricaoEvento }) => (
-  <View style={styles.card}>
-    <Image source={imagemEvento} style={styles.image} />
+const EventCard = ({
+  imagemEvento,
+  nomeEvento,
+  dataEvento,
+  horaEvento,
+  subtitulo,
+  onPress,
+}) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
+    <Image source={{ uri: imagemEvento }} style={styles.image} />
     <View style={styles.content}>
       <Text style={styles.title}>{nomeEvento}</Text>
       <Text style={styles.details}>
         Data: {dataEvento} | Horário: {horaEvento}
       </Text>
       <Text style={styles.description} numberOfLines={3}>
-        {descricaoEvento}
+        {subtitulo}
       </Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 export default function App() {
@@ -129,23 +141,22 @@ export default function App() {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: 'purple',
-    maxHeight: 300,
+    backgroundColor: '#fff',
     borderRadius: 8,
-    marginTop: 10,
+    marginBottom: 10,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 3,
-    marginHorizontal: 10,
   },
   image: {
     width: 100,
     height: 'auto',
     resizeMode: 'cover',
     marginRight: 10,
+    borderRadius: 8,
   },
   content: {
     flex: 1,
@@ -154,29 +165,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: 'white',
+    color: '#333',
   },
   details: {
     fontSize: 14,
-    color: '#fff',
+    color: '#555',
     marginBottom: 5,
   },
   description: {
     fontSize: 16,
-    color: 'white',
-  },
-  button: {
-    backgroundColor: 'red',
-    color: 'white', 
-    justifyContent: 'center',
-    height: 30,
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
-    marginHorizontal: 10,
+    color: '#666',
   },
 });

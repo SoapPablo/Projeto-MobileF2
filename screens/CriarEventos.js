@@ -13,7 +13,9 @@ import MapPicker from '../components/MapPicker';
 import MyImagePicker from '../components/MyImagePicker';
 import { EventoProvider, useEventoContext } from '../contexts/EventoContext';
 
+
 const CriarEventosContent = () => {
+  
   const {
     // Estados
     setImagemEvento,
@@ -254,7 +256,9 @@ const CriarEventosContent = () => {
             {enderecoError}
           </HelperText>
 
-          <TouchableOpacity style={styles.confirmButton} onPress={criarEvento}>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={criarEvento}>
             <Text style={styles.buttonText}>Criar Evento</Text>
           </TouchableOpacity>
         </View>
@@ -266,7 +270,7 @@ const CriarEventosContent = () => {
 const CriarEventos = () => {
   return (
     <EventoProvider>
-        <CriarEventosContent />
+      <CriarEventosContent />
     </EventoProvider>
   );
 };

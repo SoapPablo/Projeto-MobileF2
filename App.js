@@ -3,6 +3,7 @@ import NavegacaoPrincipal from './routes/NavegacaoPrincipal';
 import { EventoProvider } from './contexts/EventoContext';
 import React from 'react';
 import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
+import AuthProvider from './contexts/Autenticacao';
 
 const theme = {
   ...DefaultTheme,
@@ -17,11 +18,13 @@ const theme = {
 const App = () => {
   return (
     <PaperProvider>
-      <EventoProvider>
-        <NavigationContainer>
-          <NavegacaoPrincipal />
+      <AuthProvider>
+      <NavigationContainer>
+        <EventoProvider>
+            <NavegacaoPrincipal />    
+        </EventoProvider>
         </NavigationContainer>
-      </EventoProvider>
+      </AuthProvider>
     </PaperProvider>
   );
 };

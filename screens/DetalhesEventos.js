@@ -54,11 +54,7 @@ const DetalhesDoEvento = () => {
         </Text>
 
         <View style={styles.iconInfo}>
-          <IconInfo
-            faixaEtaria={eventoSelecionado.selectedFaixaEtaria}
-            bebidas={eventoSelecionado.selectedBebidas}
-            fumantes={eventoSelecionado.selectedFumante}
-          />
+          <IconInfo />
         </View>
 
         <View>

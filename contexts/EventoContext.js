@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const EventoContext = createContext();
 
@@ -14,6 +15,7 @@ export const useEventoContext = () => {
 };
 
 export const EventoProvider = ({ children }) => {
+  const navigation = useNavigation();
   const [imagemEvento, setImagemEvento] = useState(null);
   const [nomeEvento, setNomeEvento] = useState('');
   const [subtitulo, setSubtitulo] = useState('');
@@ -46,9 +48,9 @@ export const EventoProvider = ({ children }) => {
       nomeEvento: 'Nome do evento',
       subtitulo: 'Subtítulo do evento',
       descricaoEvento: 'Descrição',
-      selectedFaixaEtaria: 'Livre para todos',
-      selectedBebidas: 'Sem álcool',
-      selectedFumante: 'Proibido fumar',
+      selectedFaixaEtaria: 'Proibido menores de 18 anos',
+      selectedBebidas: 'Leve sua bebida',
+      selectedFumante: 'Hookah',
       selectedTipoEvento: 'Churrasco',
       dataEvento: '30/11/2023',
       horaEvento: '20:30',
@@ -64,7 +66,7 @@ export const EventoProvider = ({ children }) => {
       imagemEvento:
         'https://s2-techtudo.glbimg.com/KTWNbCJotODzAc34cm6LV8x2zz4=/0x0:1200x889/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2022/3/3/8uDXAgRv2I4Zi5KLbzMw/ccxp-techtudo.jpg',
       nomeEvento: 'Festa do JC',
-      subtitulo: 'Forrozada a noite toda 🎉🪩',
+      subtitulo: 'noite toda 🎉🪩',
       descricaoEvento: 'Imagine uma descrição MT boa',
       selectedFaixaEtaria: 'Proibido menores de 18 anos',
       selectedBebidas: 'Leve sua bebida',
@@ -77,7 +79,7 @@ export const EventoProvider = ({ children }) => {
         longitude: -47.913013100624084,
         latitude: -15.83442284741676,
       },
-      endereco: 'Estacionamento da faculdade dos cornos',
+      endereco: 'Estacionamento',
     },
   ]);
 
@@ -124,6 +126,7 @@ export const EventoProvider = ({ children }) => {
   const validarSubtitulo = (text) => {
     if (text.length > 42) {
       setSubtituloError('O subtítulo não pode ter mais de 42 caracteres.');
+      return;
     } else {
       setSubtituloError('');
     }
@@ -219,7 +222,7 @@ export const EventoProvider = ({ children }) => {
       setEnderecoError('');
     }
 
-    console.log('bagui doido');
+    // cria o evento
     const novoEvento = {
       id: eventos.length + 1,
       imagemEvento,
@@ -245,12 +248,16 @@ export const EventoProvider = ({ children }) => {
           'eventos',
           JSON.stringify([...eventos, novoEvento])
         );
+        // Atualize o componente após a criação do evento
+        // e navegue para a tela BuscarEventos
       } catch (error) {
         console.error('Erro ao salvar eventos localmente:', error);
       }
     };
 
     salvarEventosLocalmente();
+
+    navigation.navigate('BuscarEventos');
   };
 
   const removerEvento = async (id) => {
