@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+
 import EventoService from '../services/EventoService';
+import { getAuthenticatedUserId } from '../services/AuthService';
 
 const EventoContext = createContext();
 
@@ -37,9 +39,11 @@ export const EventoProvider = ({ children }) => {
   const [dataEventoError, setDataEventoError] = useState(null);
   const [localizacaoEventoError, setLocalizacaoEventoError] = useState(null);
   const [enderecoError, setEnderecoError] = useState('');
-  const [aletaError, setAlertaError] = useState('');
 
   const [eventos, setEventos] = useState([]);
+
+  // Obtém o ID do usuário autenticado
+  const userID = getAuthenticatedUserId();
 
   const handleLocationSelected = (location) => {
     setLocalizacaoEvento(location);
@@ -51,6 +55,15 @@ export const EventoProvider = ({ children }) => {
 
   const handleHoraSelected = (horaEvento) => {
     setHoraEvento(horaEvento);
+  };
+
+  const listar = async () => {
+    try {
+      const listaAtualizada = await EventoService.buscarEventos();
+      setEventos(listaAtualizada);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   // Valida o nome do evento.
@@ -69,6 +82,7 @@ export const EventoProvider = ({ children }) => {
   const validarSubtitulo = (text) => {
     if (text.length > 42) {
       setSubtituloError('O subtítulo não pode ter mais de 42 caracteres.');
+      return;
     } else {
       setSubtituloError('');
     }
@@ -105,90 +119,111 @@ export const EventoProvider = ({ children }) => {
   };
 
   const criarEvento = async () => {
-    // Verifica se uma imagem foi escolhida.
-    if (!imagemEvento) {
-      setImagemError('Por favor, escolha uma imagem para o evento.');
-    } else {
-      setImagemError('');
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Verifica se uma imagem foi escolhida.
+        if (!imagemEvento) {
+          setImagemError('Por favor, escolha uma imagem para o evento.');
+          return;
+        } else {
+          setImagemError('');
+        }
 
-    // Verifica o nome do evento.
-    if (nomeEvento.trim().length < 5) {
-      setNomeEventoError('O nome do evento deve ter pelo menos 5 caracteres.');
-    } else {
-      setNomeEventoError('');
-    }
+        // Verifica o nome do evento.
+        if (nomeEvento.trim().length < 5) {
+          setNomeEventoError(
+            'O nome do evento deve ter pelo menos 5 caracteres.'
+          );
+          return;
+        } else {
+          setNomeEventoError('');
+        }
 
-    // Verifica os pickers de informação.
-    if (
-      selectedFaixaEtaria === 'na' ||
-      selectedBebidas === 'na' ||
-      selectedFumante === 'na' ||
-      selectedTipoEvento === 'na'
-    ) {
-      setPickerNaError('Por favor, Preencha todas as informações do evento.');
-    } else {
-      setPickerNaError('');
-    }
+        // Verifica os pickers de informação.
+        if (
+          selectedFaixaEtaria === 'na' ||
+          selectedBebidas === 'na' ||
+          selectedFumante === 'na' ||
+          selectedTipoEvento === 'na'
+        ) {
+          setPickerNaError(
+            'Por favor, Preencha todas as informações do evento.'
+          );
+          return;
+        } else {
+          setPickerNaError('');
+        }
 
-    // Verifica se a data, hora e duração foram escolhidas.
-    if (!dataEvento) {
-      setDataEventoError('Por favor, selecione a data do evento.');
-    } else if (!horaEvento) {
-      setDataEventoError('Por favor, selecione o horário do evento');
-    } else if (selectedDuracao == 'na') {
-      setDataEventoError('Por favor, selecione a duração do evento.');
-    } else {
-      setDataEventoError('');
-    }
+        // Verifica se a data, hora e duração foram escolhidas.
+        if (!dataEvento) {
+          setDataEventoError('Por favor, selecione a data do evento.');
+          return;
+        } else if (!horaEvento) {
+          setDataEventoError('Por favor, selecione o horário do evento');
+          return;
+        } else if (selectedDuracao == 'na') {
+          setDataEventoError('Por favor, selecione a duração do evento.');
+          return;
+        } else {
+          setDataEventoError('');
+        }
 
-    // Verifica se uma localização foi escolhida.
-    if (!localizacaoEvento) {
-      setLocalizacaoEventoError('Por favor, marque a localização do evento.');
-    } else {
-      setLocalizacaoEventoError('');
-    }
+        // Verifica se uma localização foi escolhida.
+        if (!localizacaoEvento) {
+          setLocalizacaoEventoError(
+            'Por favor, marque a localização do evento.'
+          );
+          return;
+        } else {
+          setLocalizacaoEventoError('');
+        }
 
-    // Verifica o endereço do evento.
-    if (endereco.trim().length < 10) {
-      setEnderecoError('O endereço deve ter pelo menos 10 caracteres');
-    } else {
-      setEnderecoError('');
-    }
+        // Verifica o endereço do evento.
+        if (endereco.trim().length < 10) {
+          setEnderecoError('O endereço deve ter pelo menos 10 caracteres');
+          return;
+        } else {
+          setEnderecoError('');
+        }
 
-    // Se ouver erros, mostra um alert ao usuário.
-    if (
-      imagemError ||
-      nomeEventoError ||
-      pickerNaError ||
-      dataEventoError ||
-      localizacaoEventoError ||
-      enderecoError
-    ) {
-      setAlertaError('Por favor, reveja o formulário e corrija os erros.');
-      return;
-    }
+        // Busca os eventos do Firebase para obter o maior ID
+        const eventosDoFirebase = await EventoService.buscarEventos();
 
-    // cria o evento
-    const novoEvento = {
-      id: eventos.length + 1,
-      imagemEvento,
-      nomeEvento,
-      subtitulo,
-      descricaoEvento,
-      selectedFaixaEtaria,
-      selectedBebidas,
-      selectedFumante,
-      selectedTipoEvento,
-      dataEvento,
-      horaEvento,
-      selectedDuracao,
-      localizacaoEvento,
-      endereco,
-    };
+        // Encontra o maior ID
+        const maiorId = eventosDoFirebase.reduce((maxId, evento) => {
+          return evento.id > maxId ? evento.id : maxId;
+        }, 0);
 
-    setEventos([...eventos, novoEvento]);
-    await adicionarEventoNoFirebase(novoEvento);
+        // cria o evento
+        const novoEvento = {
+          id: maiorId + 1,
+          criador: userID,
+          imagemEvento,
+          nomeEvento,
+          subtitulo,
+          descricaoEvento,
+          selectedFaixaEtaria,
+          selectedBebidas,
+          selectedFumante,
+          selectedTipoEvento,
+          dataEvento,
+          horaEvento,
+          selectedDuracao,
+          localizacaoEvento,
+          endereco,
+          confirmados: [userID],
+        };
+
+        // Adiciona o evento ao Firebase
+        await adicionarEventoNoFirebase(novoEvento);
+
+        // Resolva a Promise, indicando que a operação foi concluída com sucesso
+        resolve();
+      } catch (error) {
+        // Rejeita a Promise se houver um erro
+        reject(error);
+      }
+    });
   };
 
   const adicionarEventoNoFirebase = async (novoEvento) => {
@@ -197,11 +232,6 @@ export const EventoProvider = ({ children }) => {
     } catch (error) {
       console.error('Erro ao adicionar evento no Firebase:', error);
     }
-  };
-
-  const removerEvento = (id) => {
-    const listaAtualizada = eventos.filter((eventos) => eventos.id !== id);
-    setEventos(listaAtualizada);
   };
 
   const atualizar = (
@@ -246,9 +276,8 @@ export const EventoProvider = ({ children }) => {
     return eventos.find((evento) => evento.id === id);
   };
 
-  useEffect(() => {}, [eventos]);
-
   const contextValues = {
+    userID,
     imagemEvento,
     setImagemEvento,
     nomeEvento,
@@ -301,23 +330,10 @@ export const EventoProvider = ({ children }) => {
     criarEvento,
     eventos,
     setEventos,
-    aletaError,
-    setAlertaError,
-    removerEvento,
     atualizar,
     buscar,
-
-    buscarEventos: async () => {
-      try {
-        const eventosDoServidor = await EventoService.buscarEventos();
-
-        setEventos(eventosDoServidor);
-      } catch (error) {
-        console.error('Erro ao buscar eventos:', error);
-      }
-    },
+    listar,
   };
-
 
   return (
     <EventoContext.Provider value={contextValues}>

@@ -4,8 +4,9 @@ import { signIn, signUp, sendPasswordResetEmail } from '../services/AuthService'
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState({ email: null, logado: true });
+  const [usuario, setUsuario] = useState({ email: null, logado: false });
   const [error, setError] = useState('');
+
   const login = async (email, senha) => {
     try {
       if (!email || !senha) {

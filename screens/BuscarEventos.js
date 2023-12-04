@@ -33,22 +33,22 @@ const EventCard = ({
 );
 
 const BuscarEventos = ({ navigation }) => {
-  const { eventos, buscarEventos } = useEventoContext();
+  const { eventos, listar } = useEventoContext();
   const [searchQuery, setSearchQuery] = useState('');
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
   useEffect(() => {
-  const fetchEventos = async () => {
-    try {
-      await buscarEventos();
-    } catch (error) {
-      console.error('Erro ao buscar eventos:', error);
-    }
-  };
+    const carregarEventosDoBanco = async () => {
+      try {
+        await listar();
+      } catch (error) {
+        console.error('Erro ao buscar eventos do Firebase:', error);
+      }
+    };
 
-  fetchEventos();
-},[buscarEventos]);
+    carregarEventosDoBanco();
+  }, [listar]);
 
   return (
     <ScrollView style={styles.container}>
@@ -128,5 +128,4 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
-
 export default BuscarEventos;

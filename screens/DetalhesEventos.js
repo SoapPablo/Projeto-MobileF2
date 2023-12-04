@@ -16,8 +16,11 @@ import { useRoute } from '@react-navigation/native';
 const DetalhesDoEvento = () => {
   const route = useRoute();
   const eventoId = route.params?.eventoId;
+
   const eventoContext = useEventoContext();
   const eventoSelecionado = eventoContext.buscar(eventoId);
+
+  const userID = eventoContext.userID;
 
   return (
     <ScrollView style={styles.scrollView}>

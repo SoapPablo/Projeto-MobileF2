@@ -50,7 +50,7 @@ const IconInfo = ({ faixaEtaria, bebidas, fumantes }) => {
   return (
     <View style={styles.infoContainer}>
       <View style={styles.infoItem}>
-        <Image
+                <Image
           source={getIconFaixaEtaria(faixaEtaria)}
           style={styles.infoImage}
         />

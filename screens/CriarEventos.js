@@ -51,12 +51,16 @@ const CriarEventosContent = () => {
     validarEndereco,
     criarEvento,
   } = useEventoContext();
+
   const navigation = useNavigation();
 
   const handleCriarEvento = async () => {
-    await criarEvento();
-    console.log('Evento criado com sucesso. Navegando para BuscarEventos.');
-    navigation.navigate('BuscarEventos');
+    try {
+      await criarEvento();
+      navigation.navigate('BuscarEventos');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -261,8 +265,9 @@ const CriarEventosContent = () => {
             visible={enderecoError}>
             {enderecoError}
           </HelperText>
-
-          <TouchableOpacity style={styles.confirmButton} onPress={handleCriarEvento}>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={handleCriarEvento}>
             <Text style={styles.buttonText}>Criar Evento</Text>
           </TouchableOpacity>
         </View>
