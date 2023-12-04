@@ -15,6 +15,7 @@ const EventCard = ({
   nomeEvento,
   dataEvento,
   horaEvento,
+  subtitulo,
   onPress,
 }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
@@ -23,6 +24,9 @@ const EventCard = ({
       <Text style={styles.title}>{nomeEvento}</Text>
       <Text style={styles.details}>
         Data: {dataEvento} | Horário: {horaEvento}
+      </Text>
+      <Text style={styles.description} numberOfLines={3}>
+        {subtitulo}
       </Text>
     </View>
   </TouchableOpacity>
@@ -54,7 +58,7 @@ const BuscarEventos = ({ navigation }) => {
         value={searchQuery}
       />
 
-       {eventos.length > 0 ? (
+      {eventos.length > 0 ? (
         eventos.map((evento) => (
           <EventCard
             key={evento.id}
@@ -112,6 +116,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     marginBottom: 5,
+  },
+  description: {
+    fontSize: 16,
+    color: '#666',
   },
   noEventsText: {
     textAlign: 'center',

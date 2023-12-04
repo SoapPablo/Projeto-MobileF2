@@ -1,16 +1,21 @@
 import axios from 'axios';
 
-const API_KEY = 'AIzaSyC_NfUP4frRz6boI-jOjVYoeQ9g5cHX5bw';
+const API_KEY = 'AIzaSyAkHXM9vxrlbPRcMOa4eW1mDVh2v06aMuk';
 
 const BASE_URL = 'https://identitytoolkit.googleapis.com/v1/accounts';
 
 const signIn = async (email, password) => {
   try {
-    await axios.post(`${BASE_URL}:signInWithPassword?key=${API_KEY}`, {
+    const response = await axios.post(`${BASE_URL}:signInWithPassword?key=${API_KEY}`, {
       email,
       password,
       returnSecureToken: true,
     });
+
+    // Extraia o userID da resposta do servidor
+    const userId = response.data.localId;
+    setAuthenticatedUserId(userId);
+    return userId;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       const errorMessage = error.response.data.error.message;
@@ -36,10 +41,9 @@ const signUp = async (nome, email, password) => {
     const response = await axios.post(`${BASE_URL}:signUp?key=${API_KEY}`, {
       email,
       password,
-      displayName: nome, 
+      displayName: nome,
       returnSecureToken: true,
     });
-
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       if (error.response.data.error.message === 'EMAIL_EXISTS') {
@@ -62,6 +66,22 @@ const sendPasswordResetEmail = async (email) => {
   } catch (error) {
     throw new Error('Erro ao recuperar senha, Email não encontrado.');
   }
-}; 
+};
 
-export { signIn, signUp, sendPasswordResetEmail };
+let authenticatedUserId = null;
+
+const setAuthenticatedUserId = (userId) => {
+  authenticatedUserId = userId;
+};
+
+const getAuthenticatedUserId = () => {
+  return authenticatedUserId;
+};
+
+export {
+  signIn,
+  signUp,
+  sendPasswordResetEmail,
+  setAuthenticatedUserId,
+  getAuthenticatedUserId,
+};

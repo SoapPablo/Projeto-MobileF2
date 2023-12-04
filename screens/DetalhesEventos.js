@@ -20,6 +20,8 @@ const DetalhesDoEvento = () => {
   const eventoContext = useEventoContext();
   const eventoSelecionado = eventoContext.buscar(eventoId);
 
+  const userID = eventoContext.userID;
+
   return (
     <ScrollView style={styles.scrollView}>
       <View>
@@ -54,7 +56,11 @@ const DetalhesDoEvento = () => {
         </Text>
 
         <View style={styles.iconInfo}>
-          <IconInfo />
+          <IconInfo
+            faixaEtaria={eventoSelecionado.selectedFaixaEtaria}
+            bebidas={eventoSelecionado.selectedBebidas}
+            fumantes={eventoSelecionado.selectedFumante}
+          />
         </View>
 
         <View>
@@ -78,6 +84,7 @@ const DetalhesDoEvento = () => {
             latitude={eventoSelecionado.localizacaoEvento.latitude}
             longitude={eventoSelecionado.localizacaoEvento.longitude}
             nomeEvento={eventoSelecionado.nomeEvento}
+            tipoEvento={eventoSelecionado.selectedTipoEvento}
           />
         </View>
 

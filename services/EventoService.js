@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://backend-mobile-a55fc-default-rtdb.firebaseio.com';
+const BASE_URL = 'https://backend-mobile-ba2f9-default-rtdb.firebaseio.com';
 
 const EventoService = {
   adicionarEvento: async (evento) => {
