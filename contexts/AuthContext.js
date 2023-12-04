@@ -6,7 +6,6 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState({ email: null, logado: true });
   const [error, setError] = useState('');
-
   const login = async (email, senha) => {
     try {
       if (!email || !senha) {

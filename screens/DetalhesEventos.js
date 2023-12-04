@@ -16,7 +16,6 @@ import { useRoute } from '@react-navigation/native';
 const DetalhesDoEvento = () => {
   const route = useRoute();
   const eventoId = route.params?.eventoId;
-
   const eventoContext = useEventoContext();
   const eventoSelecionado = eventoContext.buscar(eventoId);
 
@@ -54,7 +53,11 @@ const DetalhesDoEvento = () => {
         </Text>
 
         <View style={styles.iconInfo}>
-          <IconInfo />
+          <IconInfo
+            faixaEtaria={eventoSelecionado.selectedFaixaEtaria}
+            bebidas={eventoSelecionado.selectedBebidas}
+            fumantes={eventoSelecionado.selectedFumante}
+          />
         </View>
 
         <View>
@@ -78,6 +81,7 @@ const DetalhesDoEvento = () => {
             latitude={eventoSelecionado.localizacaoEvento.latitude}
             longitude={eventoSelecionado.localizacaoEvento.longitude}
             nomeEvento={eventoSelecionado.nomeEvento}
+            tipoEvento={eventoSelecionado.selectedTipoEvento}
           />
         </View>
 

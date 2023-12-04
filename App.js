@@ -17,15 +17,15 @@ const theme = {
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <PaperProvider>
-        <AuthProvider>
-          <EventoProvider>
+    <PaperProvider>
+      <AuthProvider>
+        <EventoProvider>
+          <NavigationContainer>
             <NavegacaoPrincipal />
-          </EventoProvider>
-        </AuthProvider>
-      </PaperProvider>
-    </NavigationContainer>
+          </NavigationContainer>
+        </EventoProvider>
+      </AuthProvider>
+    </PaperProvider>
   );
 };
 

@@ -16,18 +16,28 @@ export const useEventoContext = () => {
 export const EventoProvider = ({ children }) => {
   const [imagemEvento, setImagemEvento] = useState(null);
   const [nomeEvento, setNomeEvento] = useState('');
+  const [subtitulo, setSubtitulo] = useState('');
   const [descricaoEvento, setDescricaoEvento] = useState('');
+  const [selectedFaixaEtaria, setSelectedFaixaEtaria] =
+    useState('naFaixaEtaria');
+  const [selectedBebidas, setSelectedBebidas] = useState('na');
+  const [selectedFumante, setSelectedFumante] = useState('na');
+  const [selectedTipoEvento, setSelectedTipoEvento] = useState('na');
   const [dataEvento, setDataEvento] = useState(null);
   const [horaEvento, setHoraEvento] = useState(null);
+  const [selectedDuracao, setSelectedDuracao] = useState('na');
   const [localizacaoEvento, setLocalizacaoEvento] = useState(null);
   const [endereco, setEndereco] = useState('');
 
   const [imagemError, setImagemError] = useState('');
   const [nomeEventoError, setNomeEventoError] = useState('');
+  const [subtituloError, setSubtituloError] = useState('');
   const [descricaoEventoError, setDescricaoEventoError] = useState('');
+  const [pickerNaError, setPickerNaError] = useState('');
   const [dataEventoError, setDataEventoError] = useState(null);
   const [localizacaoEventoError, setLocalizacaoEventoError] = useState(null);
   const [enderecoError, setEnderecoError] = useState('');
+  const [aletaError, setAlertaError] = useState('');
 
   const [eventos, setEventos] = useState([]);
 
@@ -43,15 +53,6 @@ export const EventoProvider = ({ children }) => {
     setHoraEvento(horaEvento);
   };
 
- const listar = async () => {
-    try {
-      const listaAtualizada = await EventoService.buscarEventos();
-      setEventos(listaAtualizada);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
   // Valida o nome do evento.
   const validarNomeEvento = (text) => {
     if (text.length > 26) {
@@ -62,6 +63,16 @@ export const EventoProvider = ({ children }) => {
       setNomeEventoError('');
     }
     setNomeEvento(text);
+  };
+
+  // Valida o subtítulo.
+  const validarSubtitulo = (text) => {
+    if (text.length > 42) {
+      setSubtituloError('O subtítulo não pode ter mais de 42 caracteres.');
+    } else {
+      setSubtituloError('');
+    }
+    setSubtitulo(text);
   };
 
   // Valida a descrição.
@@ -94,12 +105,9 @@ export const EventoProvider = ({ children }) => {
   };
 
   const criarEvento = async () => {
-  return new Promise(async (resolve, reject) => {
-    try {
     // Verifica se uma imagem foi escolhida.
     if (!imagemEvento) {
       setImagemError('Por favor, escolha uma imagem para o evento.');
-      return;
     } else {
       setImagemError('');
     }
@@ -107,26 +115,36 @@ export const EventoProvider = ({ children }) => {
     // Verifica o nome do evento.
     if (nomeEvento.trim().length < 5) {
       setNomeEventoError('O nome do evento deve ter pelo menos 5 caracteres.');
-      return;
     } else {
       setNomeEventoError('');
+    }
+
+    // Verifica os pickers de informação.
+    if (
+      selectedFaixaEtaria === 'na' ||
+      selectedBebidas === 'na' ||
+      selectedFumante === 'na' ||
+      selectedTipoEvento === 'na'
+    ) {
+      setPickerNaError('Por favor, Preencha todas as informações do evento.');
+    } else {
+      setPickerNaError('');
     }
 
     // Verifica se a data, hora e duração foram escolhidas.
     if (!dataEvento) {
       setDataEventoError('Por favor, selecione a data do evento.');
-      return;
     } else if (!horaEvento) {
       setDataEventoError('Por favor, selecione o horário do evento');
-      return;
+    } else if (selectedDuracao == 'na') {
+      setDataEventoError('Por favor, selecione a duração do evento.');
     } else {
-      setDataEventoError(null);
+      setDataEventoError('');
     }
 
     // Verifica se uma localização foi escolhida.
     if (!localizacaoEvento) {
       setLocalizacaoEventoError('Por favor, marque a localização do evento.');
-      return;
     } else {
       setLocalizacaoEventoError('');
     }
@@ -134,9 +152,21 @@ export const EventoProvider = ({ children }) => {
     // Verifica o endereço do evento.
     if (endereco.trim().length < 10) {
       setEnderecoError('O endereço deve ter pelo menos 10 caracteres');
-      return;
     } else {
       setEnderecoError('');
+    }
+
+    // Se ouver erros, mostra um alert ao usuário.
+    if (
+      imagemError ||
+      nomeEventoError ||
+      pickerNaError ||
+      dataEventoError ||
+      localizacaoEventoError ||
+      enderecoError
+    ) {
+      setAlertaError('Por favor, reveja o formulário e corrija os erros.');
+      return;
     }
 
     // cria o evento
@@ -144,42 +174,49 @@ export const EventoProvider = ({ children }) => {
       id: eventos.length + 1,
       imagemEvento,
       nomeEvento,
+      subtitulo,
       descricaoEvento,
+      selectedFaixaEtaria,
+      selectedBebidas,
+      selectedFumante,
+      selectedTipoEvento,
       dataEvento,
       horaEvento,
+      selectedDuracao,
       localizacaoEvento,
       endereco,
     };
- // Atualiza o estado com o novo evento
-      setEventos([...eventos, novoEvento]);
 
-      // Adiciona o evento ao Firebase
-      await adicionarEventoNoFirebase(novoEvento);
+    setEventos([...eventos, novoEvento]);
+    await adicionarEventoNoFirebase(novoEvento);
+  };
 
-      // Resolva a Promise, indicando que a operação foi concluída com sucesso
-      resolve();
+  const adicionarEventoNoFirebase = async (novoEvento) => {
+    try {
+      await EventoService.adicionarEvento(novoEvento);
     } catch (error) {
-      // Rejeita a Promise se houver um erro
-      reject(error);
+      console.error('Erro ao adicionar evento no Firebase:', error);
     }
-  });
-};
+  };
 
-const adicionarEventoNoFirebase = async (novoEvento) => {
-  try {
-    await EventoService.adicionarEvento(novoEvento);
-  } catch (error) {
-    console.error('Erro ao adicionar evento no Firebase:', error);
-  }
-};
+  const removerEvento = (id) => {
+    const listaAtualizada = eventos.filter((eventos) => eventos.id !== id);
+    setEventos(listaAtualizada);
+  };
 
   const atualizar = (
     id,
     imagemEvento,
     nomeEvento,
+    subtitulo,
     descricaoEvento,
+    selectedFaixaEtaria,
+    selectedBebidas,
+    selectedFumante,
+    selectedTipoEvento,
     dataEvento,
     horaEvento,
+    selectedDuracao,
     localizacaoEvento,
     endereco
   ) => {
@@ -187,9 +224,15 @@ const adicionarEventoNoFirebase = async (novoEvento) => {
       id,
       imagemEvento,
       nomeEvento,
+      subtitulo,
       descricaoEvento,
+      selectedFaixaEtaria,
+      selectedBebidas,
+      selectedFumante,
+      selectedTipoEvento,
       dataEvento,
       horaEvento,
+      selectedDuracao,
       localizacaoEvento,
       endereco,
     };
@@ -203,17 +246,31 @@ const adicionarEventoNoFirebase = async (novoEvento) => {
     return eventos.find((evento) => evento.id === id);
   };
 
+  useEffect(() => {}, [eventos]);
+
   const contextValues = {
     imagemEvento,
     setImagemEvento,
     nomeEvento,
     setNomeEvento,
+    subtitulo,
+    setSubtitulo,
     descricaoEvento,
     setDescricaoEvento,
+    selectedFaixaEtaria,
+    setSelectedFaixaEtaria,
+    selectedBebidas,
+    setSelectedBebidas,
+    selectedFumante,
+    setSelectedFumante,
+    selectedTipoEvento,
+    setSelectedTipoEvento,
     dataEvento,
-    dataEventoError,
+    setDataEvento,
     horaEvento,
     setHoraEvento,
+    selectedDuracao,
+    setSelectedDuracao,
     localizacaoEvento,
     setLocalizacaoEvento,
     endereco,
@@ -222,8 +279,13 @@ const adicionarEventoNoFirebase = async (novoEvento) => {
     setImagemError,
     nomeEventoError,
     setNomeEventoError,
+    subtituloError,
+    setSubtituloError,
     descricaoEventoError,
     setDescricaoEventoError,
+    pickerNaError,
+    setPickerNaError,
+    dataEventoError,
     setDataEventoError,
     localizacaoEventoError,
     setLocalizacaoEventoError,
@@ -233,15 +295,29 @@ const adicionarEventoNoFirebase = async (novoEvento) => {
     handleDataSelected,
     handleHoraSelected,
     validarNomeEvento,
+    validarSubtitulo,
     validarDescricaoEvento,
     validarEndereco,
     criarEvento,
     eventos,
     setEventos,
+    aletaError,
+    setAlertaError,
+    removerEvento,
     atualizar,
     buscar,
-    listar,
+
+    buscarEventos: async () => {
+      try {
+        const eventosDoServidor = await EventoService.buscarEventos();
+
+        setEventos(eventosDoServidor);
+      } catch (error) {
+        console.error('Erro ao buscar eventos:', error);
+      }
+    },
   };
+
 
   return (
     <EventoContext.Provider value={contextValues}>
