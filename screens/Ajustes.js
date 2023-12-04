@@ -1,17 +1,15 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../contexts/Autenticacao';
+import { AuthContext } from '../contexts/AuthContext';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const Ajustes = ({ navigation }) => {
-  const { logout, usuario } = useContext(AuthContext);
+const Ajustes = () => {
+  const { logout } = useContext(AuthContext);
 
   const handleLogout = () => {
     logout();
-    navigation.navigate('Login');
   };
 
   const handleRedefinirSenha = () => {
-    // Lógica para redefinir senha
     console.log('Redefinir Senha');
   };
 

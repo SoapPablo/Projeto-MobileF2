@@ -78,7 +78,6 @@ const DetalhesDoEvento = () => {
             latitude={eventoSelecionado.localizacaoEvento.latitude}
             longitude={eventoSelecionado.localizacaoEvento.longitude}
             nomeEvento={eventoSelecionado.nomeEvento}
-            tipoEvento={eventoSelecionado.selectedTipoEvento}
           />
         </View>
 

@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
-import { AuthContext } from '../contexts/Autenticacao';
+import { AuthContext } from '../contexts/AuthContext';
 
-import Cadastro from '../screens/Cadastro';
+import Cadastro from '../screens/Register';
 import DetalhesEventos from '../screens/DetalhesEventos';
 import EsqueceuSenha from '../screens/EsqueceuSenha';
 import Login from '../screens/Login';
@@ -74,12 +74,12 @@ function NavegacaoPrincipal() {
         <>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Cadastro} />
-          <Stack.Screen name="Esqueceu sua Senha" component={EsqueceuSenha} />
+          <Stack.Screen name="EsqueceuSenha" component={EsqueceuSenha} />
         </>
       ) : (
         <>
-          <Stack.Screen name="BuscarEventos" component={NavegacaoAba}
-          />
+          <Stack.Screen name="BuscarEventos" component={NavegacaoAba}/>
+          <Stack.Screen name="CriarEventos" component={CriarEventos} />
           <Stack.Screen name="Ajustes" component={Ajustes} />
           <Stack.Screen name="Detalhes do Evento" component={DetalhesEventos} />
         </>

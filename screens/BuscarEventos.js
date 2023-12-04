@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,6 @@ const EventCard = ({
   nomeEvento,
   dataEvento,
   horaEvento,
-  subtitulo,
   onPress,
 }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
@@ -25,18 +24,27 @@ const EventCard = ({
       <Text style={styles.details}>
         Data: {dataEvento} | Horário: {horaEvento}
       </Text>
-      <Text style={styles.description} numberOfLines={3}>
-        {subtitulo}
-      </Text>
     </View>
   </TouchableOpacity>
 );
 
 const BuscarEventos = ({ navigation }) => {
-  const { eventos } = useEventoContext();
+  const { eventos, listar } = useEventoContext();
   const [searchQuery, setSearchQuery] = useState('');
 
   const onChangeSearch = (query) => setSearchQuery(query);
+
+  useEffect(() => {
+    const carregarEventosDoBanco = async () => {
+      try {
+        await listar();
+      } catch (error) {
+        console.error('Erro ao buscar eventos do Firebase:', error);
+      }
+    };
+
+    carregarEventosDoBanco();
+  }, [listar]);
 
   return (
     <ScrollView style={styles.container}>
@@ -46,7 +54,7 @@ const BuscarEventos = ({ navigation }) => {
         value={searchQuery}
       />
 
-      {eventos.length > 0 ? (
+       {eventos.length > 0 ? (
         eventos.map((evento) => (
           <EventCard
             key={evento.id}
@@ -105,10 +113,6 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 5,
   },
-  description: {
-    fontSize: 16,
-    color: '#666',
-  },
   noEventsText: {
     textAlign: 'center',
     marginTop: 20,
@@ -116,5 +120,4 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
-
 export default BuscarEventos;

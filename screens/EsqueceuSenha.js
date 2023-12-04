@@ -1,55 +1,58 @@
 import { useContext, useState } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, StyleSheet } from 'react-native';
-import { Button, HelperText, Text, TextInput } from 'react-native-paper';
-
-import { AuthContext } from '../contexts/Autenticacao';
+import {
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  StyleSheet,
+} from 'react-native';
+import { Button, Text, TextInput } from 'react-native-paper';
+import { AuthContext } from '../contexts/AuthContext';
 
 const EsqueceuSenha = ({ navigation }) => {
-  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const { error, register } = useContext(AuthContext);
+  const { error, sendPasswordReset } = useContext(AuthContext);
 
   const handleLogin = () => {
     navigation.navigate('Login');
   };
 
-  const handleRecoverPassword = () => {
-    // register(nome, email, senha);
-    navigation.navigate('NavegacaoPrincipal');
+  const handleRecover = async () => {
+    try {
+      await sendPasswordReset(email);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-    <KeyboardAvoidingView
+      <KeyboardAvoidingView
         style={styles.background}
         behavior="padding"
         enabled>
-      <ScrollView style={{ flex: 1}}
-      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-        <Text style={{ fontSize: 24, textAlign: 'center' }}>Recuperar senha</Text>
-        <HelperText type="error" visible={true}>{error}</HelperText>
-        <TextInput
-          label="Nome"
-          value={nome}
-          onChangeText={(text) => setNome(text)}
-        />
-        <TextInput
-          label="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-         <TextInput
-          label="Confirmar Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-       
-        <Button mode="contained" onPress={handleRecoverPassword}>
-          Confirmar
-        </Button>
-        <Button onPress={handleLogin}>Voltar</Button>
-      </ScrollView>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+          <Text style={{ fontSize: 24, textAlign: 'center' }}>
+            Recuperar senha
+          </Text>
+          <TextInput
+            label="Email"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            keyboardType="email-address"
+          />
+          {error && (
+            <Text
+              style={{ color: 'red', textAlign: 'center', marginBottom: 10 }}>
+              {error}
+            </Text>
+          )}
+          <Button mode="contained" onPress={handleRecover}>
+            Confirmar
+          </Button>
+          <Button onPress={handleLogin}>Voltar</Button>
+        </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );
@@ -63,4 +66,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
 });
+
 export default EsqueceuSenha;

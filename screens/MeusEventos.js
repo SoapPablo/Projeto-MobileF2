@@ -42,7 +42,7 @@ function CriadosScreen() {
     showDialog,
     hideDialog,
     visible,
-    setImagemEvento, 
+    imagemEvento, 
     remover,
   } = useEventoContext();
 
