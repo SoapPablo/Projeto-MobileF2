@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     borderWidth: 1,
     borderColor: '#a020f0',
-    height: 500,
+    height: 400,
   },
   headerContainer: {
     width: '100%',

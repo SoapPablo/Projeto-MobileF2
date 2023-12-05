@@ -15,38 +15,41 @@ import { useEventoContext } from '../contexts/EventoContext';
 
 const Tab = createMaterialTopTabNavigator();
 
-function ConfirmadosScreen() {
-  const { eventos, contextValues, remover } = useEventoContext();
+const ConfirmadosScreen = ({ navigation }) => {
+  const { eventos, userID } = useEventoContext();
+
+  const confirmadosEvents = eventos.filter((evento) =>
+    evento.confirmados.includes(userID)
+  );
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView>
-        {eventos.map((evento, index) => (
+    <ScrollView style={styles.container}>
+      {confirmadosEvents.length > 0 ? (
+        confirmadosEvents.map((evento) => (
           <EventCard
-            key={index}
-            title={evento.nomeEvento}
-            date={evento.dataEvento}
-            time={evento.horaEvento}
-            description={evento.descricaoEvento}
-            imageSource={{ uri: evento.imagemEvento }}
+            key={evento.id}
+            imagemEvento={evento.imagemEvento}
+            nomeEvento={evento.nomeEvento}
+            dataEvento={evento.dataEvento}
+            horaEvento={evento.horaEvento}
+            subtitulo={evento.subtitulo}
+            onPress={() =>
+              navigation.navigate('Detalhes do Evento', {
+                eventoId: evento.id,
+              })
+            }
           />
-        ))}
-      </ScrollView>
-    </View>
+        ))
+      ) : (
+        <Text style={styles.noEventsText}>Nenhum evento confirmado</Text>
+      )}
+    </ScrollView>
   );
-}
+};
 
 function CriadosScreen() {
-  const {
-    eventos,
-    showDialog,
-    hideDialog,
-    visible,
-    imagemEvento, 
-    remover,
-  } = useEventoContext();
-
-  const navigation = useNavigation();  
+  const { eventos, showDialog, hideDialog, visible, remover } = useEventoContext();
+  const navigation = useNavigation();
 
   return (
     <Provider>
@@ -60,12 +63,21 @@ function CriadosScreen() {
               horaEvento={evento.horaEvento}
               subtitulo={evento.descricaoEvento}
               onPress={() =>
-                navigation.navigate('Detalhes do Evento', { eventoId: evento.id })
+                navigation.navigate('Detalhes do Evento', {
+                  eventoId: evento.id,
+                })
               }
             />
           ))}
           <TouchableOpacity style={styles.button} onPress={showDialog}>
-            <Text style={{ backgroundColor: 'red' ,margin: 10,  borderRadius: 15, color: 'white', textAlign: 'center' }}>
+            <Text
+              style={{
+                backgroundColor: 'red',
+                margin: 10,
+                borderRadius: 15,
+                color: 'white',
+                textAlign: 'center',
+              }}>
               CANCELAR EVENTO
             </Text>
           </TouchableOpacity>
@@ -125,7 +137,7 @@ export default function App() {
           activeTintColor: 'white',
           inactiveTintColor: 'white',
           style: {
-            backgroundColor: 'purple',
+            backgroundColor: '#a020f0',
           },
           indicatorStyle: {
             backgroundColor: 'white',
