@@ -66,6 +66,17 @@ export const EventoProvider = ({ children }) => {
     }
   };
 
+  const handleRemoveEvent = async (id) => {
+    try {
+      await EventoService.excluir(id); // Usando a função excluir do serviço
+      const index = eventos.findIndex((evento) => evento.id === id);
+      eventos.splice(index, 1);
+      setEventos([...eventos]);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   // Valida o nome do evento.
   const validarNomeEvento = (text) => {
     if (text.length > 26) {
@@ -227,22 +238,22 @@ export const EventoProvider = ({ children }) => {
   };
 
   const adicionarUsuarioAoEvento = async (eventoId) => {
-  try {
-    await EventoService.adicionarUsuarioConfirmado(eventoId, userID);
-    console.log('Usuário adicionado com sucesso ao evento!');
-  } catch (error) {
-    console.error('Erro ao adicionar usuário ao evento:', error);
-  }
-};
+    try {
+      await EventoService.adicionarUsuarioConfirmado(eventoId, userID);
+      console.log('Usuário adicionado com sucesso ao evento!');
+    } catch (error) {
+      console.error('Erro ao adicionar usuário ao evento:', error);
+    }
+  };
 
-const removerUsuarioDoEvento = async (eventoId) => {
-  try {
-    await EventoService.removerUsuarioConfirmado(eventoId, userID);
-    console.log('Usuário removido com sucesso do evento!');
-  } catch (error) {
-    console.error('Erro ao remover usuário do evento:', error);
-  }
-};
+  const removerUsuarioDoEvento = async (eventoId) => {
+    try {
+      await EventoService.removerUsuarioConfirmado(eventoId, userID);
+      console.log('Usuário removido com sucesso do evento!');
+    } catch (error) {
+      console.error('Erro ao remover usuário do evento:', error);
+    }
+  };
 
   const atualizar = (
     id,
@@ -345,6 +356,7 @@ const removerUsuarioDoEvento = async (eventoId) => {
     atualizar,
     buscar,
     listar,
+    handleRemoveEvent,
   };
 
   return (

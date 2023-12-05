@@ -69,7 +69,7 @@ function NavegacaoPrincipal() {
   const { usuario } = useContext(AuthContext);
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator >
       {!usuario.logado ? (
         <>
           <Stack.Screen name="Login" component={Login} />

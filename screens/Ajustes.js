@@ -3,7 +3,15 @@ import { AuthContext } from '../contexts/AuthContext';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 
 const Ajustes = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, sendPasswordReset } = useContext(AuthContext);
+
+  const handleRecover = async () => {
+    try {
+      await sendPasswordReset(email);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -30,7 +38,7 @@ const Ajustes = () => {
         <TouchableOpacity
           style={styles.smallButton}
           onPress={handleRedefinirSenha}>
-          <Text style={styles.textButton}>Trocar senha</Text>
+          <Text style={styles.textButton} onPress={handleRecover}>Trocar senha</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.smallButton}>
