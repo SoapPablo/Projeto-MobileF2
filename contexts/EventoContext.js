@@ -215,7 +215,7 @@ export const EventoProvider = ({ children }) => {
         };
 
         // Adiciona o evento ao Firebase
-        await adicionarEventoNoFirebase(novoEvento);
+        await EventoService.adicionarEvento(novoEvento.id, novoEvento);
 
         // Resolva a Promise, indicando que a operação foi concluída com sucesso
         resolve();
@@ -226,13 +226,23 @@ export const EventoProvider = ({ children }) => {
     });
   };
 
-  const adicionarEventoNoFirebase = async (novoEvento) => {
-    try {
-      await EventoService.adicionarEvento(novoEvento);
-    } catch (error) {
-      console.error('Erro ao adicionar evento no Firebase:', error);
-    }
-  };
+  const adicionarUsuarioAoEvento = async (eventoId) => {
+  try {
+    await EventoService.adicionarUsuarioConfirmado(eventoId, userID);
+    console.log('Usuário adicionado com sucesso ao evento!');
+  } catch (error) {
+    console.error('Erro ao adicionar usuário ao evento:', error);
+  }
+};
+
+const removerUsuarioDoEvento = async (eventoId) => {
+  try {
+    await EventoService.removerUsuarioConfirmado(eventoId, userID);
+    console.log('Usuário removido com sucesso do evento!');
+  } catch (error) {
+    console.error('Erro ao remover usuário do evento:', error);
+  }
+};
 
   const atualizar = (
     id,
@@ -328,6 +338,8 @@ export const EventoProvider = ({ children }) => {
     validarDescricaoEvento,
     validarEndereco,
     criarEvento,
+    adicionarUsuarioAoEvento,
+    removerUsuarioDoEvento,
     eventos,
     setEventos,
     atualizar,
