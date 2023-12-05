@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Button,
+  IconButton,
 } from 'react-native';
 import { Dialog, Portal, Provider } from 'react-native-paper';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
@@ -16,7 +16,7 @@ import { useEventoContext } from '../contexts/EventoContext';
 const Tab = createMaterialTopTabNavigator();
 
 const ConfirmadosScreen = ({ navigation }) => {
-  const { eventos, userID } = useEventoContext();
+  const { eventos, userID, handleRemoveEvent } = useEventoContext();
 
   const confirmadosEvents = eventos.filter((evento) =>
     evento.confirmados.includes(userID)
@@ -48,65 +48,52 @@ const ConfirmadosScreen = ({ navigation }) => {
 };
 
 function CriadosScreen() {
-  const { eventos, showDialog, hideDialog, visible, remover } = useEventoContext();
-  const navigation = useNavigation();
+  const { eventos, userID, handleRemoveEvent } = useEventoContext();
+
+  const confirmadosEvents = eventos.filter((evento) =>
+    evento.confirmados.includes(userID)
+  );
+
 
   return (
-    <Provider>
-      <View style={{ flex: 1 }}>
-        <ScrollView>
-          {eventos.map((evento, index) => (
-            <EventCard
-              key={index}
-              nomeEvento={evento.nomeEvento}
-              dataEvento={evento.dataEvento}
-              horaEvento={evento.horaEvento}
-              subtitulo={evento.descricaoEvento}
-              onPress={() =>
-                navigation.navigate('Detalhes do Evento', {
-                  eventoId: evento.id,
-                })
-              }
-            />
-          ))}
-          <TouchableOpacity style={styles.button} onPress={showDialog}>
-            <Text
-              style={{
-                backgroundColor: 'red',
-                margin: 10,
-                borderRadius: 15,
-                color: 'white',
-                textAlign: 'center',
-              }}>
-              CANCELAR EVENTO
-            </Text>
+  <ScrollView style={styles.container}>
+    {confirmadosEvents.length > 0 ? (
+      confirmadosEvents.map((evento) => (
+        <View key={evento.id}>
+          <EventCard
+            imagemEvento={evento.imagemEvento}
+            nomeEvento={evento.nomeEvento}
+            dataEvento={evento.dataEvento}
+            horaEvento={evento.horaEvento}
+            subtitulo={evento.subtitulo}
+            right={(props) => (
+              <IconButton
+                {...props}
+                icon="delete"
+                color='black'
+                onPress={() => handleRemoveEvent(evento.id)}
+              />
+            )}
+            onPress={() =>
+              navigation.navigate('Detalhes do Evento', {
+                eventoId: evento.id,
+              })
+            }
+          />
+          <TouchableOpacity
+            style={styles.removeButton}
+            onPress={() => handleRemoveEvent(evento.id)}
+          >
+            <Text style={styles.removeButtonText}>Apagar Evento</Text>
           </TouchableOpacity>
-        </ScrollView>
-
-        <Portal>
-          <Dialog
-            visible={visible}
-            onDismiss={hideDialog}
-            style={{ backgroundColor: 'white' }}>
-            <Dialog.Title style={{ color: 'black' }}>
-              Cancelar Evento
-            </Dialog.Title>
-            <Dialog.Content>
-              <Text style={{ color: 'black' }}>
-                Deseja realmente cancelar o evento?
-              </Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={() => remover(contato.id)}>Cancelar</Button>
-              <Button onPress={hideDialog}>Voltar</Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </View>
-    </Provider>
-  );
+        </View>
+      ))
+    ) : (
+      <Text style={styles.noEventsText}>Nenhum evento confirmado</Text>
+    )}
+  </ScrollView>
+);
 }
-
 const EventCard = ({
   imagemEvento,
   nomeEvento,
@@ -187,5 +174,15 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: '#666',
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  removeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

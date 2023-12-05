@@ -66,6 +66,13 @@ const EventoService = {
       throw error;
     }
   },
+  excluir: async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/eventos/${id}.json`);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 export default EventoService;
